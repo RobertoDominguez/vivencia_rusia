@@ -11,7 +11,7 @@ class TransaccionController extends Controller
 
     public function indexWeb()
     {
-        $transacciones = Transaccion::orderBy('Transaccion.id', 'desc')->paginate(20);
+        $transacciones = Transaccion::join('Tipo','Tipo.id','Transaccion.id_tipo')->orderBy('Transaccion.id', 'desc')->select('Transaccion.*','Tipo.nombre')->paginate(20);
         return view('transacciones.index', compact('transacciones'));
     }
 

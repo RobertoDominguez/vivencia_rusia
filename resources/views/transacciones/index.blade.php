@@ -9,6 +9,8 @@
                     <th>Monto</th>
                     <th>Fecha</th>
                     <th>Tipo</th>
+                    <th>Es entrada</th>
+                    <th>Es servicio</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -17,7 +19,17 @@
                     <tr>
                         <td>{{ $transaccion->monto }}</td>
                         <td>{{ $transaccion->fecha }}</td>
-                        <td>{{ $transaccion->id_tipo }}</td>
+                        <td>{{ $transaccion->nombre }}</td>
+                        @if ($transaccion->es_entrada==1)
+                            <td>Entrada</td>
+                        @else
+                            <td>Salida</td>
+                        @endif
+                        @if ($transaccion->es_servicio==1)
+                            <td>Servicio</td>
+                        @else
+                            <td>Compra</td>
+                        @endif
                         <td>
                             <form action="{{ route('transacciones.destroy', $transaccion->id) }}" method="POST"
                                 class="d-inline">
@@ -36,6 +48,4 @@
     <div class="d-flex justify-content-center">
         {{ $transacciones->links() }}
     </div>
-
-    
 @endsection

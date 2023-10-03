@@ -78,7 +78,8 @@ class RusiaController extends Controller
             'es_entrada' => $request->has('es_entrada'),
             'es_servicio' => $request->has('es_servicio'),
             'duracion' => $request->duracion,
-            'id_tipo' => $id_tipo
+            'id_tipo' => $id_tipo,
+            'id_user' => auth()->user()->id
         ]);
 
         return redirect(route('menu'))->with('success', 'Transaccion guardada con exito!');
@@ -103,6 +104,7 @@ class RusiaController extends Controller
             ->select(DB::raw('SUM(Transaccion.monto) as monto'), 'Tipo.nombre')
             ->whereDate('fecha','>',Carbon::now()->subDays($dias))
             ->where('Transaccion.es_entrada', 0)
+            ->where('id_user',auth()->user()->id)
             ->groupBy('Tipo.nombre')
             ->havingRaw('SUM(Transaccion.monto) > 0')
             ->get();
@@ -118,6 +120,7 @@ class RusiaController extends Controller
         $transaccionesArr = DB::table('Transaccion')
             ->select('fecha', DB::raw('SUM(monto) as monto'))
             ->where('es_entrada', 0)
+            ->where('id_user',auth()->user()->id)
             ->whereDate('fecha','>',Carbon::now()->subDays($dias))
             ->groupBy('fecha')
             ->orderBy('fecha', 'desc')
