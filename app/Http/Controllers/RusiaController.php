@@ -48,7 +48,7 @@ class RusiaController extends Controller
     public function menu()
     {
 
-        $tipos = Tipo::all();
+        $tipos = Tipo::where('id_user',auth()->user()->id)->get();
 
         return view('menu', compact('tipos'));
     }
@@ -63,10 +63,13 @@ class RusiaController extends Controller
         ]);
 
 
-        $tipo = Tipo::where('nombre', $request->tipos)->get()->first();
+        $tipo = Tipo::where('nombre', $request->tipos)->where('id_user',auth()->user()->id)->get()->first();
 
         if (is_null($tipo)) {
-            $new_tipo = Tipo::create(['nombre' => $request->tipos]);
+            $new_tipo = Tipo::create([
+                'nombre' => $request->tipos,
+                'id_user'=>auth()->user()->id
+            ]);
             $id_tipo = $new_tipo->id;
         } else {
             $id_tipo = $tipo->id;
@@ -96,15 +99,15 @@ class RusiaController extends Controller
             $dias = $request->dias;
         }
 
-        $entrada = Transaccion::where('es_entrada', 1)->sum('monto');
-        $salida = Transaccion::where('es_entrada', 0)->sum('monto');
+        $entrada = Transaccion::where('es_entrada', 1)->where('id_user',auth()->user()->id)->sum('monto');
+        $salida = Transaccion::where('es_entrada', 0)->where('id_user',auth()->user()->id)->sum('monto');
 
         $tipos = DB::table('Transaccion')
             ->join('Tipo', 'Transaccion.id_tipo', '=', 'Tipo.id')
             ->select(DB::raw('SUM(Transaccion.monto) as monto'), 'Tipo.nombre')
             ->whereDate('fecha','>',Carbon::now()->subDays($dias))
             ->where('Transaccion.es_entrada', 0)
-            ->where('id_user',auth()->user()->id)
+            ->where('Transaccion.id_user',auth()->user()->id)
             ->groupBy('Tipo.nombre')
             ->havingRaw('SUM(Transaccion.monto) > 0')
             ->get();

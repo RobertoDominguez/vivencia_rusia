@@ -15,6 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('nombre');
             $table->timestamps();
+
+            $table->unsignedBigInteger('id_user');
+            $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
+
             $table->softDeletes();
         });
     }

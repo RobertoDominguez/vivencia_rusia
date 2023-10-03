@@ -11,7 +11,7 @@ class TipoController extends Controller
 
     public function indexWeb()
     {
-        $tipos = Tipo::all();
+        $tipos = Tipo::where('id_user',auth()->user()->id)->get();
         return view('tipos.index', compact('tipos'));
     }
 
