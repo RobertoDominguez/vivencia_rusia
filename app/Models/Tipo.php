@@ -13,7 +13,8 @@ class Tipo extends Model
     protected $table='Tipo';
 
     protected $fillable=[
-        'nombre'
+        'nombre',
+        'id_user'
     ];
 
 }
